@@ -1,0 +1,6 @@
+@import url("reset.css");
+
+body {
+  height: 100%;
+  overflow: hidden; /*넘치는 부분은 스크롤이 생기지 않도록*/
+}
