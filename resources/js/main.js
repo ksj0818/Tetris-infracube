@@ -37,7 +37,7 @@ const BLOCKS = {
 const movingItem = {
   type: "square", // 블럭 타입
   direction: 0, // 방향키를 눌렀을때 좌우로 회전시키는 용도
-  top:18,       // top은 좌표 기준으로 어디까지 내려와있는지 등 표현해주는 역할
+  top: 18,       // top은 좌표 기준으로 어디까지 내려와있는지 등 표현해주는 역할
   left: 8       // top과 마찬가지로 좌우 좌표 값을 표현해주는 역할
 };
 
@@ -70,16 +70,18 @@ function renderBlocks() { // 블럭을 렌더링 해주는 함수
   // 블럭을 선택해서 좌표값에 맞는 모양대로 그림을 그려주는 역할
   const { type, direction, top, left } = tempMovingItem;  // 각각의 프로퍼티들을 바로 바로 변수처럼 사용하기 위해서 destruction 사용
   const movingBlocks = document.querySelectorAll('.moving'); // moving 클래스를 가진 모든 엘리먼트
+  
   movingBlocks.forEach(moving => {
     moving.classList.remove(type, 'moving') // moving을 가진 클래스를 삭제
     moving.style.outline = 'none';          // 블럭 이동 시 기존 outling 안보이게 설정
   })
 
   BLOCKS[type][direction].forEach(block => {  // 반복문 돌려서 각각의 클래스를 선택 후 그리기
-    console.log(block);
+    // 블록 위치 (좌표) 설정 
     const x = block[0] + left;
     const y = block[1] + top;
-    const target = playground.childNodes[y].childNodes[0].childNodes[x];
+    const target = playground.childNodes[y].childNodes[0].childNodes[x];  // ul.li[y].ul[0].li[x]
+    console.log(target);
     
     target.classList.add(type, "moving"); // 매트릭스에 클래스이름 추가, "moving"이라는 클래스도 추가해서 무빙을 가지고 있는 클래스만 컬러를 가질 수 있도록 함 
     target.style.outline = '1px solid rgba(0, 0, 0, 0.3)';  
@@ -88,7 +90,6 @@ function renderBlocks() { // 블럭을 렌더링 해주는 함수
 
 function moveBlock(moveType, amount) {  // moveType은 렌더링을 할때 tempMovingItem을 통해서 하기 때문에 tempMovingItem을 바꿔주면 됨
   tempMovingItem[moveType] += amount;
-  
   renderBlocks();
 }
 
