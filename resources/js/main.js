@@ -79,6 +79,7 @@ function renderBlocks(moveType ='') { // 블럭을 렌더링 해주는 함수 , 
         if (moveType === 'retry') {
           clearInterval(downInterval);  // 인터벌을 멈춘 후 게임오버 텍스트 호출
           showGameOverText();
+          return;
         }
         renderBlocks('retry');       
         if (moveType === 'top') {
@@ -206,6 +207,8 @@ document.addEventListener('keydown', e => {
 restartBtn.addEventListener('click', () => {
   playground.innerHTML = '';  // 현재 보드판 공백으로 수정 후 init() 호출로 다시 그리기
   gameText.style.display = 'none';
+  score = 0;
+  gameScore.innerHTML = `Score: ${score}`; 
   init();
 })
 
