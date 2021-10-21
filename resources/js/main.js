@@ -5,6 +5,7 @@ const playground = document.querySelector('.playground ul');
 const gameText = document.querySelector('.game__text');
 const gameScore = document.querySelector('.game__score');
 const restartBtn = document.querySelector('.game__text button');
+const gameLevel = document.querySelector('.game__level');
 
 
 // Settings
@@ -13,9 +14,10 @@ const COLS = 10;
 
 // Variables
 let score = 0;
-let duration = 300; // 블럭이 떨어지는 시간
+let duration = 1000; // 블럭이 떨어지는 시간
 let downInterval;
 let tempMovingItem; // 무빙을 실행하기 전에 잠시 담아주는 용도
+let level = 0;
 
 
 // 무빙아이템이 실질적으로 다음 블럭의 타입과 좌표등 가지고 있는 객체가 됨
@@ -170,7 +172,20 @@ function checkMatch() {
       child.remove();
       prependNewLine(); 
       score += 100;
-      gameScore.innerHTML = `Score: ${score}`;     
+      gameScore.innerHTML = `Score: ${score}`;
+      // 스코어가 5천으로 나누어질 때마다 레벨 1씩 증가 및 듀레이션 조건에 맞게 마이너스
+      if (score % 1000 == 0) {
+        level < 10 ? ++level : level;
+        gameLevel.innerHTML = `Level: ${level}`
+        if (level < 5) {  
+          duration -= 200;
+        } else if (level < 10) {
+          duration -= 20;
+        } else if (level === 10){
+          duration = 40;
+        }
+        console.log(duration);
+      }
     }
   })
   generateNewBlock();
@@ -209,6 +224,10 @@ restartBtn.addEventListener('click', () => {
   gameText.style.display = 'none';
   score = 0;
   gameScore.innerHTML = `Score: ${score}`; 
+  level = 0;
+  gameLevel.innerHTML = `Level: ${level}`;
+  duration = 1000;
+
   init();
 })
 
