@@ -5,10 +5,38 @@ body {
   overflow: hidden;
 }
 
-.score {
-  text-align: center;
+.wrap {
+  width: 100%;
+  display: flex;
+}
+
+.game__info {
   font-size: 40px;
-  margin-top: 10px;
+  margin: 20px 60px;
+}
+
+.game__level {
+  margin-top: 20px;
+}
+
+.game__text {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 50px;
+  color: white;
+}
+
+.game__text > button {
+  padding: 20px;
+  margin-top: 50px;
+  background-color: wheat;
+  cursor: pointer;
 }
 
 .playground {
@@ -18,10 +46,10 @@ body {
 }
 
 .playground > ul {
-  border: 1px solid #333;
+  border: 4mm ridge rgba(170, 50, 220, 0.6);
   width: 300px;
   height: 600px;
-  background-color: whitesmoke;
+  background-color: black;
 }
 
 .playground > ul > li {
@@ -36,10 +64,28 @@ body {
   height: 30px;
 }
 
-.tree {
+.t {
   background-color: violet;
 }
 
 .square {
-  background-color: yellowgreen;
+  background-color: yellow;
+}
+
+.i {
+  background-color: turquoise;
+}
+
+.z {
+  background-color: red;
+}
+
+.s {
+  background-color: greenyellow;
+}
+.l {
+  background-color: peru;
+}
+.j {
+  background-color: blue;
 }
