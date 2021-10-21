@@ -2,6 +2,10 @@ import BLOCKS from './blocks.js';
 
 // DOM
 const playground = document.querySelector('.playground ul');
+const gameText = document.querySelector('.game__text');
+const gameScore = document.querySelector('.game__score');
+const restartBtn = document.querySelector('.game__text button');
+
 
 // Settings
 const ROWS = 20;
@@ -9,17 +13,17 @@ const COLS = 10;
 
 // Variables
 let score = 0;
-let duration = 500; // 블럭이 떨어지는 시간
+let duration = 300; // 블럭이 떨어지는 시간
 let downInterval;
 let tempMovingItem; // 무빙을 실행하기 전에 잠시 담아주는 용도
 
 
 // 무빙아이템이 실질적으로 다음 블럭의 타입과 좌표등 가지고 있는 객체가 됨
 const movingItem = {
-  type: "tree", // 블럭 타입
+  type: "", // 블럭 타입
   direction: 0, // 방향키를 눌렀을때 좌우로 회전시키는 용도
-  top: 10,       // top은 좌표 기준으로 어디까지 내려와있는지 등 표현해주는 역할
-  left: 0       // top과 마찬가지로 좌우 좌표 값을 표현해주는 역할
+  top: 0,       // top은 좌표 기준으로 어디까지 내려와있는지 등 표현해주는 역할
+  left: 4       // top과 마찬가지로 좌우 좌표 값을 표현해주는 역할
 };
 
 
@@ -31,7 +35,7 @@ function init() { // 처음 시작될 때 실행
     tempMovingItem = {...movingItem}; // 스프레드 operator movingItem안에 있는 값만 가져와서 넣어줌 (movingItem의 값이 변하더라도 temp는 값이 안변함)
     prependNewLine(); // 게임 보드판 생성하는 함수
   }
-  renderBlocks();
+  generateNewBlock();
 }
 
 function prependNewLine() {
@@ -72,7 +76,11 @@ function renderBlocks(moveType ='') { // 블럭을 렌더링 해주는 함수 , 
     } else {
       tempMovingItem = {...movingItem}
       setTimeout(() => {  // setTimeout을 하게 되면 함수가 다 실행 되고, 즉 이벤트 루프에 예약된 이벤트들이 다 실행이 된 후에 스택에 집어넣음 0초를 주더라도 함수 실행 후 이벤트 스택이 넘치는 것을 방지
-        renderBlocks();       
+        if (moveType === 'retry') {
+          clearInterval(downInterval);  // 인터벌을 멈춘 후 게임오버 텍스트 호출
+          showGameOverText();
+        }
+        renderBlocks('retry');       
         if (moveType === 'top') {
           seizeBlock();
         }
@@ -104,7 +112,7 @@ function seizeBlock() {
     moving.classList.remove('moving') // moving을 가진 클래스를 삭제
     moving.classList.add('seized');
   })
-  generateNewBlock();
+  checkMatch();
 }
 
 function changeDirection() { // 블럭 회전
@@ -119,6 +127,20 @@ function changeDirection() { // 블럭 회전
 }
 
 function generateNewBlock() { // 블럭 시즈 후 무빙아이템 프로퍼티들 초기화 후 새로운 블럭 생성
+  clearInterval(downInterval);
+  downInterval = setInterval(() => {
+    moveBlock('top', 1);
+  }, duration);
+
+  // Object를 반복문 돌리기 위해서 Object.entries(BLOCKS)로 BLOCKS를 감싼 후에 length 사용
+  const blockArray = Object.entries(BLOCKS);  // 배열 형태로 반환, 콘솔로그 찍어보면 0번째 인덱스에는 타입이 들어있고 1번째 인덱스에는 그 타입에 따른 값이 들어있어서 forEach문을 돌려야함
+  const randomIndex = Math.floor(Math.random() * blockArray.length);
+
+  // blockArray.forEach(block => {
+  //   console.log(block);
+  // });  
+
+  movingItem.type = blockArray[randomIndex][0]; // 블럭 랜덤으로 만들기
   movingItem.top = 0;
   movingItem.left = 3;
   movingItem.direction = 0;
@@ -126,10 +148,41 @@ function generateNewBlock() { // 블럭 시즈 후 무빙아이템 프로퍼티�
   renderBlocks();
 }
 
+function dropBlock() {
+  clearInterval(downInterval);
+  downInterval = setInterval(() => {
+    moveBlock('top', 1)
+  }, 10)
+}
+
+function checkMatch() {
+  const childNodes = playground.childNodes;
+
+  childNodes.forEach(child => { // 각각의 li들을 체크
+    let matched = true;
+    child.children[0].childNodes.forEach(li => {  // ul안에 li(matrix)들 검사
+      if (!li.classList.contains('seized')) {
+        matched = false;
+      }
+    })
+    if (matched) {
+      child.remove();
+      prependNewLine(); 
+      score += 100;
+      gameScore.innerHTML = `Score: ${score}`;     
+    }
+  })
+  generateNewBlock();
+}
+
+function showGameOverText() {
+  gameText.style.display = "flex";
+}
+
 // event handlering
 document.addEventListener('keydown', e => { 
   // 각각의 키는 keyCode를 가지고 있음
-  switch(e.keyCode) {   // 39(우), 37(좌), 38(상), 40(하)
+  switch(e.keyCode) {   // 39(우), 37(좌), 38(상), 40(하), 32(space bar)
     case 39:  // 오른쪽 방향키 
       moveBlock("left", 1);
       break;
@@ -139,17 +192,22 @@ document.addEventListener('keydown', e => {
     case 40:  // 아래 방향키
       moveBlock("top", 1)
       break;
-    case 38: {  // 윗 방향키
+    case 38:  // 윗 방향키
       changeDirection();
       break;
-    }
+    case 32: 
+      dropBlock();
+      break;
     default: 
       break;
   }
 });
 
-
-
+restartBtn.addEventListener('click', () => {
+  playground.innerHTML = '';  // 현재 보드판 공백으로 수정 후 init() 호출로 다시 그리기
+  gameText.style.display = 'none';
+  init();
+})
 
 
 
