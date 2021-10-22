@@ -173,7 +173,6 @@ function dropBlock() {
 
 function checkMatch() {
   const childNodes = playground.childNodes;
-
   childNodes.forEach(child => { // 각각의 li들을 체크
     let matched = true;
     child.children[0].childNodes.forEach(li => {  // ul안에 li(matrix)들 검사
@@ -186,8 +185,8 @@ function checkMatch() {
       prependNewLine(); 
       score += 100;
       gameScore.innerHTML = `Score: ${score}`;
-      // 스코어가 5천으로 나누어질 때마다 레벨 1씩 증가 및 듀레이션 조건에 맞게 마이너스
-      if (score % 1000 == 0) {
+      // 스코어가 600으로 나누어질 때마다 레벨 1씩 증가 및 듀레이션 조건에 맞게 마이너스
+      if (score % 600 == 0) {
         level < 10 ? ++level : level;
         gameLevel.innerHTML = `Level: ${level}`
         if (level < 5) {  
@@ -207,6 +206,9 @@ function checkMatch() {
 function showGameOverText() {
   gameText.style.display = "flex";
   rankId = prompt("what is your name?");
+  if (rankId === null) {
+    rankId = 'unknown';
+  }
   rankInfo.userName = rankId;
   rankInfo.rankScore = score;
   setLocalStorage();
