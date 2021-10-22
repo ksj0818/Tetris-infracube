@@ -6,6 +6,7 @@ const gameText = document.querySelector('.game__text');
 const gameScore = document.querySelector('.game__score');
 const restartBtn = document.querySelector('.game__text button');
 const gameLevel = document.querySelector('.game__level');
+const gameRank = document.querySelector('.game__rank');
 
 
 // Settings
@@ -18,6 +19,12 @@ let duration = 1000; // 블럭이 떨어지는 시간
 let downInterval;
 let tempMovingItem; // 무빙을 실행하기 전에 잠시 담아주는 용도
 let level = 0;
+let rankId = '';
+let rankInfo = {
+  userName: "",
+  rankScore: score
+}
+let rankList = [];
 
 
 // 무빙아이템이 실질적으로 다음 블럭의 타입과 좌표등 가지고 있는 객체가 됨
@@ -28,11 +35,16 @@ const movingItem = {
   left: 4       // top과 마찬가지로 좌우 좌표 값을 표현해주는 역할
 };
 
+if (localStorage.Rank !== undefined) {
+  rankList = JSON.parse(localStorage.Rank);
+  showRankText();
+}
 
 init();
 
 // functions 
 function init() { // 처음 시작될 때 실행
+  rankList.push(rankInfo);
   for (let i = 0; i < ROWS; i++) {
     tempMovingItem = {...movingItem}; // 스프레드 operator movingItem안에 있는 값만 가져와서 넣어줌 (movingItem의 값이 변하더라도 temp는 값이 안변함)
     prependNewLine(); // 게임 보드판 생성하는 함수
@@ -51,6 +63,7 @@ function prependNewLine() {
   
   li.prepend(ul);
   playground.prepend(li);
+
 }
 
 function renderBlocks(moveType ='') { // 블럭을 렌더링 해주는 함수 , moveType = ''은  함수 호출시 인자값을 안줬을때 공백으로 초기화
@@ -193,6 +206,24 @@ function checkMatch() {
 
 function showGameOverText() {
   gameText.style.display = "flex";
+  rankId = prompt("what is your name?");
+  rankInfo.userName = rankId;
+  rankInfo.rankScore = score;
+  setLocalStorage();
+}
+
+function setLocalStorage() {
+  if (localStorage.Rank !== undefined) {
+    localStorage.removeItem('Rank');
+  }
+  localStorage.setItem('Rank', JSON.stringify(rankList));
+  showRankText()
+}
+
+function showRankText() {
+  const p = document.createElement('p');
+  p.innerHTML = `${rankInfo.userName} ${rankInfo.rankScore}`;
+  gameRank.appendChild(p);
 }
 
 // event handlering
@@ -227,7 +258,6 @@ restartBtn.addEventListener('click', () => {
   level = 0;
   gameLevel.innerHTML = `Level: ${level}`;
   duration = 1000;
-
   init();
 })
 
