@@ -6,8 +6,10 @@ const gameText = document.querySelector(".game__text");
 const gameScore = document.querySelector(".game__score");
 const restartBtn = document.querySelector(".game__text button");
 const gameLevel = document.querySelector(".game__level");
-const gameRank = document.querySelector(".game__rank");
 const rankText = document.querySelector('.rank__text');
+const gameOverBtn = document.querySelector('.game__overBtn');
+
+let gameMusic = document.querySelector('.game__music');
 
 // Settings
 const ROWS = 20;
@@ -22,6 +24,7 @@ let level = 0;
 let rankId = "";
 
 let rankList = [];
+let audio = new Audio('../resources/music/Tetris-Troika-tetis(mp3hamster.net).mp3');
 
 // 무빙아이템이 실질적으로 다음 블럭의 타입과 좌표등 가지고 있는 객체가 됨
 const movingItem = {
@@ -203,7 +206,6 @@ function checkMatch() {
         } else if (level === 10) {
           duration = 40;
         }
-        console.log(duration);
       }
     }
   });
@@ -211,20 +213,21 @@ function checkMatch() {
 }
 
 function showGameOverText() {
+  gameMusic.className = 'fas fa-volume-mute game__music'  // 아이콘 변경
+  audio.pause();          // 일시 정지
+  audio.currentTime = 0;  // 재생위치를 처음으로 설정
   let rankInfo = {
     userName: "",
     rankScore: score,
   };
   gameText.style.display = "flex";
   rankId = prompt("what is your name?");
-  if (rankId === null) {
+  if (rankId === null || rankId === '') {
     rankId = "unknown";
   }
-
   rankInfo.userName = rankId;
   rankInfo.rankScore = score;
   rankList.push(rankInfo);
-  console.log(rankList);
   setLocalStorage();
 }
 
@@ -241,13 +244,12 @@ function showRankText() {
     return b.rankScore - a.rankScore;
   })
   let htmlbox = '';
-
   for (let i in rankList) {
     let count = i;
     count++
     const template = `
       <p>
-        ${count}. ${rankList[i].userName} (${rankList[i].rankScore})
+        ${count}.${rankList[i].userName}(${rankList[i].rankScore})
       </p>
     `
     htmlbox += template;
@@ -291,3 +293,26 @@ restartBtn.addEventListener("click", () => {
   duration = 1000;
   init();
 });
+
+audio.addEventListener('ended', () => { // 미디어 재생이 끝에 도달할 때 실행
+  gameMusic.className = 'fas fa-volume-up game__music'
+  audio.play();
+});
+
+let bool = false;
+gameMusic.addEventListener('click', () => {
+  // chrome에서는 사용자의 명시적인 액션(클릭 등)이 없는 상태에서의 음원 재생은 작동하지 않기 때문에 이벤트를 걸어줘야 음악 재생이 작동 한다.
+  bool = !bool;
+  if (bool) {
+    gameMusic.className = 'fas fa-volume-up game__music'
+    audio.play();
+  } else {
+    gameMusic.className = 'fas fa-volume-mute game__music'
+    audio.pause();
+  }
+})
+
+gameOverBtn.addEventListener('click', () => {
+  gameMusic.className = 'fas fa-volume-up game__music'
+  audio.play();
+})
