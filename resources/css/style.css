@@ -15,10 +15,23 @@ body {
   margin: 20px 60px;
 }
 
+.game__music {
+  cursor: pointer;
+}
+
+.game__music:hover {
+  opacity: 0.7;
+  color: tomato;
+}
+
 .game__level,
 .game__rank,
 .game__rank > p {
-  margin-top: 20px;
+  margin: 20px 0px;
+}
+
+.rank__text > p {
+  margin: 20px 0px;
 }
 
 .game__text {

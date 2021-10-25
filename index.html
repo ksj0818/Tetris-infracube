@@ -10,6 +10,7 @@
     href="https://fonts.googleapis.com/css?family=Press+Start+2P" 
     rel="stylesheet"
   />
+  <link rel="shortcut icon" href="https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico">
 </head>
 <body>
   <div class="wrap">
@@ -18,18 +19,22 @@
     </div>
     <div class="game__text">
       <p>Game Over</p>
-      <button>Restart</button>
+      <button class="game__overBtn">Restart</button>
     </div>
     <div class="game__info">
       <p class="game__score">Score: 0</p>
       <p class="game__level">Level: 0</p>
+      <p>Sound: <i class="fas fa-volume-mute game__music"></i></p>
       <div class="game__rank">
         Rank
         <div class="rank__text"></div>
       </div>
     </div>
   </div>
+
+
   <!-- JS -->
   <script src="./resources/js/main.js" type="module"></script>  <!-- type="module" import를 사용할 수 있음--> 
+  <script src="https://kit.fontawesome.com/457c559c3c.js" crossorigin="anonymous"></script>
 </body>
 </html>
