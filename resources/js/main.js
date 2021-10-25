@@ -7,6 +7,7 @@ const gameScore = document.querySelector(".game__score");
 const restartBtn = document.querySelector(".game__text button");
 const gameLevel = document.querySelector(".game__level");
 const gameRank = document.querySelector(".game__rank");
+const rankText = document.querySelector('.rank__text');
 
 // Settings
 const ROWS = 20;
@@ -19,10 +20,7 @@ let downInterval;
 let tempMovingItem; // 무빙을 실행하기 전에 잠시 담아주는 용도
 let level = 0;
 let rankId = "";
-let rankInfo = {
-  userName: "",
-  rankScore: score,
-};
+
 let rankList = [];
 
 // 무빙아이템이 실질적으로 다음 블럭의 타입과 좌표등 가지고 있는 객체가 됨
@@ -43,7 +41,6 @@ init();
 // functions
 function init() {
   // 처음 시작될 때 실행
-  rankList.push(rankInfo);
   for (let i = 0; i < ROWS; i++) {
     tempMovingItem = { ...movingItem }; // 스프레드 operator movingItem안에 있는 값만 가져와서 넣어줌 (movingItem의 값이 변하더라도 temp는 값이 안변함)
     prependNewLine(); // 게임 보드판 생성하는 함수
@@ -214,13 +211,20 @@ function checkMatch() {
 }
 
 function showGameOverText() {
+  let rankInfo = {
+    userName: "",
+    rankScore: score,
+  };
   gameText.style.display = "flex";
   rankId = prompt("what is your name?");
   if (rankId === null) {
     rankId = "unknown";
   }
+
   rankInfo.userName = rankId;
   rankInfo.rankScore = score;
+  rankList.push(rankInfo);
+  console.log(rankList);
   setLocalStorage();
 }
 
@@ -233,9 +237,22 @@ function setLocalStorage() {
 }
 
 function showRankText() {
-  const p = document.createElement("p");
-  p.innerHTML = `${rankInfo.userName} (${rankInfo.rankScore})`;
-  gameRank.appendChild(p);
+  rankList = rankList.sort(function(a,b) {
+    return b.rankScore - a.rankScore;
+  })
+  let htmlbox = '';
+
+  for (let i in rankList) {
+    let count = i;
+    count++
+    const template = `
+      <p>
+        ${count}. ${rankList[i].userName} (${rankList[i].rankScore})
+      </p>
+    `
+    htmlbox += template;
+  }
+  rankText.innerHTML = htmlbox;
 }
 
 // event handlering
