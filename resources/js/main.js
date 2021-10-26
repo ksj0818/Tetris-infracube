@@ -180,6 +180,7 @@ function dropBlock() {
 }
 
 function checkMatch() {
+  playground.className = '';
   const childNodes = playground.childNodes;
   childNodes.forEach((child) => {
     // 각각의 li들을 체크
@@ -195,8 +196,9 @@ function checkMatch() {
       prependNewLine();
       score += 100;
       gameScore.innerHTML = `Score: ${score}`;
-      // 스코어가 600으로 나누어질 때마다 레벨 1씩 증가 및 듀레이션 조건에 맞게 마이너스
-      if (score % 600 == 0) {
+      // 스코어가 800으로 나누어질 때마다 레벨 1씩 증가 및 듀레이션 조건에 맞게 마이너스
+      if (score % 800 == 0) {
+        playground.className = 'playground__levelup';
         level < 10 ? ++level : level;
         gameLevel.innerHTML = `Level: ${level}`;
         if (level < 5) {
@@ -204,7 +206,7 @@ function checkMatch() {
         } else if (level < 10) {
           duration -= 20;
         } else if (level === 10) {
-          duration = 40;
+          duration = 80;
         }
       }
     }

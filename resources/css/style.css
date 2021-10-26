@@ -68,6 +68,19 @@ body {
   margin-top: 25px;
 }
 
+.playground__levelup {
+  animation: levelUp 0.3s linear;
+}
+
+@keyframes levelUp {
+  from {
+    transform: scale(2);
+  }
+  to {
+    transform: none;
+  }
+}
+
 .playground > ul {
   border: 4mm ridge rgba(170, 50, 220, 0.6);
   width: 300px;
