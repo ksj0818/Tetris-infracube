@@ -23,7 +23,7 @@ let level = 0;
 let rankId = "";
 
 let rankList = [];
-let audio = new Audio('/resources/music/Tetris-Troika-tetis(mp3hamster.net).mp3');
+let audio = new Audio('/resources/music/Tetris-Troika-tetis(mp3hamster.net).mp3'); 
 
 // 무빙아이템이 실질적으로 다음 블럭의 타입과 좌표등 가지고 있는 객체가 됨
 const movingItem = {
